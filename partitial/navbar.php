@@ -2,7 +2,7 @@
 session_start();
 include_once __DIR__ . "/connect.php";
 ?>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="<?php
                                         echo "index.php";
                                         ?>" target="_blank">

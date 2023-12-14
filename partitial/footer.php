@@ -1,4 +1,4 @@
-    <footer class="fixed-bottom">
+    <footer class="pt-5">
         <div class="container-fuild bg-dark text-light pt-3">
             <div class="row justify-content-around d-flex align-items-center">
                 <div class="col-md-2">
