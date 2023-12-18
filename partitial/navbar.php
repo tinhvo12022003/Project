@@ -69,13 +69,13 @@ include_once __DIR__ . "/connect.php";
                 echo "
                     <ul class='navbar-nav '>
                         <li class='nav-item'>
-                            <a class='nav-link my-2 my-sm-0' href='#'>Login</a>
+                            <a class='nav-link my-2 my-sm-0' href='login.php'>Login</a>
                             
                         </li>
 
                         <li class='nav-item'>
                             
-                            <a class='nav-link my-2 my-sm-0' href='#'>Sign up</a>
+                            <a class='nav-link my-2 my-sm-0' href='signup.php'>Sign up</a>
                         </li>
                     </ul>
                     ";
