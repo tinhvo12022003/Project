@@ -25,7 +25,7 @@
             </div>
 
             <div class="col-sm-12 col-md-7">
-                <h1 class="h1 bold text-center p-3">Sign up now</h1>
+                <h1 class="h1 bold text-center p-3">Login now</h1>
 
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="p-3 form">
                     <div class="form-group">

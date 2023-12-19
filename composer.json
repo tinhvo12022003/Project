@@ -4,15 +4,13 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Main\\Autoload\\": "src/"
+            "Main\\Autoload\\": "src/",
+            "Model\\Autoload\\": "app/Model/" 
         }
     },
     "authors": [
         {
             "name": "tinhvo12022003"
         }
-    ],
-    "require": {
-        "google/apiclient": "2.0"
-    }
+    ]
 }
