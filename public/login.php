@@ -16,7 +16,8 @@
 <body>
     <?php
     include_once __DIR__ . "../../partitial/navbar.php";
-
+    require_once __DIR__ . "../../partitial/connect.php";
+    require_once __DIR__ . "../../vendor/autoload.php";
     ?>
     <div class="container">
         <div class="row p-2">
@@ -68,3 +69,25 @@
 </body>
 
 </html>
+
+<?php
+
+$username = "";
+$password = "";
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        if(isset($_POST['username']) && !empty($_POST['username'])){
+            $username = $_POST['username'];
+        }
+
+        if(isset($_POST['password']) && !empty($_POST['password'])){
+            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+        }
+    }
+
+    if((new  Main\Autoload\UserModel())->Check_User($username, $password) == true){
+        $_SESSION['username'] = $username;
+        $_SESSION['password'] = $password;
+        $_SESSION['role'] = $role;
+        header("location: ../../public/index.php");
+    }
+?>
