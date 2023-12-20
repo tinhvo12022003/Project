@@ -1,3 +1,8 @@
+<?php
+use Main\Autoload\UserModel;
+require_once __DIR__ . "../../partitial/connect.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +25,7 @@
             <div class="col-sm-12 col-md-8 col-lg-8 mx-auto rounded shadow border border-success">
                 <h1 class="text-center text-success pt-4">Sign up</h1>
                 <hr>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="p-3">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="p-3" enctype="multipart/form-data" method="post">
                     <div class="form-group row">
                         <label for="firstname" class="col-sm-2 col-form-label">First name:</label>
                         <input type="text" name="firstname" id="firstname" class="form-control col-sm-4" placeholder="Your first name..." required>
@@ -62,6 +67,8 @@
                         <label for="img" class="form-label col-sm-2">Picture</label>
                         <input type="file" name="img" id="img" class="form-control col-sm-4"> 
                     </div>
+
+                    <button type="submit" name="submit" class="btn btn-success rounded-pill col-12 mt-3">Sign up</button>
                 </form>
             </div>
         </div>
@@ -70,3 +77,85 @@
 </body>
 
 </html>
+
+
+<?php 
+require_once __DIR__ . "../../vendor/autoload.php";
+
+$id = "";
+$username = "";
+$password = "";
+$email = "";
+$gender = "";
+$url_picture = "";
+$role = "client";
+$birthday = "";
+$phone = "";
+$address = "";
+$firstname = "";
+$lastname = "";
+$fullname = "";
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+    for($i=0; $i<9; $i++){ 
+        $id .= random_int(0, 9);
+    }
+
+    if(isset($_POST['firstname']) && !empty($_POST['firstname'])){
+        $firstname = $_POST['firstname'];
+    }
+
+    if(isset($_POST['lastname']) && !empty($_POST['lastname'])){
+        $lastname = $_POST['lastname'];
+    }
+
+    $fullname = $lastname . " " . $firstname;
+
+    if(isset($_POST['email']) && !empty($_POST['email'])){
+        $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+    }
+
+    if(isset($_POST['phone']) && !empty($_POST['phone'])){
+        $phone = filter_var($_POST['phone'], FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[0-9]{10,}$/")));
+    }
+
+    if(isset($_POST['username']) && !empty($_POST['username'])){
+        $username = $_POST['username'];
+    }
+
+    if(isset($_POST['password']) && !empty($_POST['password'])){
+        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    }
+
+    if(isset($_POST['address']) && !empty($_POST['address'])){
+        $address = $_POST['address'];
+    }
+
+    if(isset($_POST['birthday']) && !empty($_POST['birthday'])){
+        $birthday = date("Y-m-d", strtotime($_POST['birthday']));
+    }
+
+    if(isset($_POST['gender']) && !empty($_POST['gender'])){
+        $gender = intval($_POST['gender']);
+    }
+    
+    if(isset($_POST['submit'])){
+        if(isset($_FILES['img']) && !empty($_FILES['img']['name'])){
+            $url_picture = $_FILES['img']['name'];
+        }   
+    }
+
+    if((new UserModel())->Check_User($username, $password) == false){ //if hasn't account
+        $query = "INSERT INTO users (id, username, password, email, gender, picture, role, birthday, phone, address, fullname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $connect->prepare($query);
+        $stmt->execute([$id, $username, $password, $email, $gender, $url_picture, $role, $birthday, $phone, $address, $fullname]);
+    } else {
+        echo "
+            <script>
+                alert('Username already exists!');
+            </script>
+        ";
+    }
+}
+
+?>
