@@ -1,5 +1,4 @@
 <?php
-use Main\Autoload\UserModel;
 require_once __DIR__ . "../../partitial/connect.php";
 ?>
 
@@ -16,6 +15,10 @@ require_once __DIR__ . "../../partitial/connect.php";
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/c858f5b048.js" crossorigin="anonymous"></script>
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="js/check_signup.js"></script>
 </head>
 
 <body>
@@ -25,32 +28,42 @@ require_once __DIR__ . "../../partitial/connect.php";
             <div class="col-sm-12 col-md-8 col-lg-8 mx-auto rounded shadow border border-success">
                 <h1 class="text-center text-success pt-4">Sign up</h1>
                 <hr>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="p-3" enctype="multipart/form-data" method="post">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="p-3" enctype="multipart/form-data" method="post" id="form-signup">
                     <div class="form-group row">
                         <label for="firstname" class="col-sm-2 col-form-label">First name:</label>
-                        <input type="text" name="firstname" id="firstname" class="form-control col-sm-4" placeholder="Your first name..." required>
+                        <input type="text" name="firstname" id="firstname" class="form-control col-sm-10" placeholder="Your first name..." required>
+                    </div>
+
+                    <div class="form-group row">
                         <label for="lastname" class="col-sm-2 col-form-label">Last name:</label>
-                        <input type="text" name="lastname" id="lastname" class="form-control col-sm-4" placeholder="Your last name..." required>
+                        <input type="text" name="lastname" id="lastname" class="form-control col-sm-10" placeholder="Your last name..." required>
                     </div>
 
                     <div class="form-group row">
                         <label for="email" class="col-sm-2 col-form-label">Email:</label>
-                        <input type="email" name="email" id="email" class="form-control col-sm-4" placeholder="Your email..." required>
+                        <input type="email" name="email" id="email" class="form-control col-sm-10" placeholder="Your email..." required>
+                    </div>
+
+                    <div class="form-group row">
                         <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
-                        <input type="text" name="phone" id="phone" class="form-control col-sm-4" placeholder="Your phone..." required>
+                        <input type="text" name="phone" id="phone" class="form-control col-sm-10" placeholder="Your phone..." required>
                     </div>
 
                     <div class="form-group row">
                         <label for="username" class="col-sm-2 col-form-label">Username:</label>
-                        <input type="text" name="username" id="username" class="form-control col-sm-4" placeholder="Username..." required> 
+                        <input type="text" name="username" id="username" class="form-control col-sm-10" placeholder="Username..." required> 
+                    </div>
+
+                    <div class="form-group row">
                         <label for="password" class="col-sm-2 col-form-label">Password:</label>
-                        <input type="password" name="password" id="password" class="form-control col-sm-4" placeholder="Password..." required>
+                        <input type="password" name="password" id="password" class="form-control col-sm-10" placeholder="Password..." required>
                     </div>
 
                     <div class="form-group row">
                         <label for="address" class="col-sm-2 col-form-label">Address:</label>
                         <textarea name="address" id="address" cols="30" rows="5" class="form-control col-sm-4" placeholder="Your address..."></textarea>
-
+                    </div>
+                    <div class="form-group row">
                         <label for="birthday" class="col-sm-2 col-form-label">Birthday:</label>
                         <input type="date" name="birthday" id="birthday" class="form-control col-sm-4" required>
                     </div>
@@ -145,10 +158,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
         }   
     }
 
-    if((new UserModel())->Check_User($username, $password) == false){ //if hasn't account
+    if((new Main\Autoload\UserModel())->Check_User($username, $password) == false){ //if hasn't account
         $query = "INSERT INTO users (id, username, password, email, gender, picture, role, birthday, phone, address, fullname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $connect->prepare($query);
         $stmt->execute([$id, $username, $password, $email, $gender, $url_picture, $role, $birthday, $phone, $address, $fullname]);
+
+        echo "
+        <script>
+            alert('Sign up successfully!');
+        </script>
+        ";
+
+        $_SESSION['username'] = $username;
+        $_SESSION['password'] = $password;
+        $_SESSION['role'] = $role;
+        $_SESSION['expire'] = time() + 3600;
+
+
+        header("location: ../../public/index.php");
     } else {
         echo "
             <script>

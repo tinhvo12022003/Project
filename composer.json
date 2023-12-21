@@ -4,8 +4,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Main\\Autoload\\": "src/",
-            "Model\\Autoload\\": "app/Model/" 
+            "Main\\Autoload\\": "public/app/Model/"
         }
     },
     "authors": [

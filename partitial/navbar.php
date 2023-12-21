@@ -20,7 +20,7 @@ include_once __DIR__ . "/connect.php";
                                                 ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="about.php">About</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -50,20 +50,21 @@ include_once __DIR__ . "/connect.php";
 
             <?php
             if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
-                $query = "SELECT * FROM User WHERE username = ? AND password = ?";
+                $query = "SELECT * FROM users WHERE username = ? AND password = ?";
                 $statment = $connect->prepare($query);
                 $statment->execute([$_SESSION['username'], $_SESSION['password']]);
                 $result = $statment->fetch(PDO::FETCH_ASSOC);
 
                 $path = "";
 
-                if(htmlspecialchars($result['img_avatar']) === ""){
+                if(htmlspecialchars($result['picture']) === ""){
                     $path = "default-avatar.png";
                 } else {
-                    $path = htmlspecialchars($result['img_avatar']);
+                    $path = htmlspecialchars($result['picture']);
                 }
                 echo "
-                    <img src='../image/" . $path . "' class='rounded-circle' width='50' height='50'>
+                    <img src='../image/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
+                    <a href='logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
                 ";
             } else {
                 echo "

@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/c858f5b048.js" crossorigin="anonymous"></script>
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="js/check_login.js"></script>
 </head>
 
 <body>
@@ -28,7 +31,7 @@
             <div class="col-sm-12 col-md-7">
                 <h1 class="h1 bold text-center p-3">Login now</h1>
 
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="p-3 form">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="p-3 form" id="form-login">
                     <div class="form-group">
                         <label for="username" class="form-label font-weight-bold">Username</label>
                         <input type="text" name="username" id="username" class="form-control">
