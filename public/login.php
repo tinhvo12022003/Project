@@ -18,9 +18,10 @@
 
 <body>
     <?php
-    include_once __DIR__ . "../../partitial/navbar.php";
+    // session_start();
+
+    require_once __DIR__ . "../../partitial/navbar.php";
     require_once __DIR__ . "../../partitial/connect.php";
-    require_once __DIR__ . "../../vendor/autoload.php";
     ?>
     <div class="container">
         <div class="row p-2">
@@ -58,7 +59,7 @@
                     </a>
 
                     <a href="">
-                        <button type="button" class="btn btn-secondary col-12 rounded-pill mt-3">
+                        <button type="button" class="btn btn-secondary col-12 rounded-pill mt-3" name="submit">
                             <i class="fa-brands fa-google"></i> Sign in with Google
                         </button>
                     </a>
@@ -68,29 +69,46 @@
 
         </div>
     </div>
-    <?php include_once __DIR__ . "../../partitial/footer.php"; ?>
+    <?php require_once __DIR__ . "../../partitial/footer.php"; ?>
 </body>
 
 </html>
 
 <?php
-
+ob_start();
 $username = "";
 $password = "";
-    if($_SERVER['REQUEST_METHOD'] == 'POST'){
-        if(isset($_POST['username']) && !empty($_POST['username'])){
-            $username = $_POST['username'];
-        }
 
-        if(isset($_POST['password']) && !empty($_POST['password'])){
-            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-        }
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['username']) && !empty($_POST['username'])) {
+        $username = $_POST['username'];
     }
 
-    if((new  Main\Autoload\UserModel())->Check_User($username, $password) == true){
-        $_SESSION['username'] = $username;
-        $_SESSION['password'] = $password;
-        $_SESSION['role'] = $role;
-        header("location: ../../public/index.php");
+    if (isset($_POST['password']) && !empty($_POST['password'])) {
+        $password = $_POST['password']; 
     }
+
+    $query = "SELECT * FROM users WHERE username = ?";
+    $statement = $connect->prepare($query);
+    $statement->execute([$username]);
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($statement->rowCount() > 0) {
+        if(password_verify($password, $result['password'])){
+            $_SESSION['username'] = $result['username'];
+            $_SESSION['password'] = $result['password'];
+            $_SESSION['id'] = $result['id'];
+            $_SESSION['img'] = $result['picture'];
+            echo "
+            <script>
+                alert('Login Success');
+                window.location.href = 'index.php'
+            </script>";
+            exit;
+        }
+    } else {
+        echo "<script>alert('Login Failed');</script>";
+    }
+}
+ob_end_flush();
 ?>

@@ -16,8 +16,8 @@
 
 <body>
   <?php
-  include_once __DIR__ . "../../partitial/navbar.php";
-
+  require_once __DIR__ . "../../partitial/navbar.php";
+  // session_start();
   ?>
 
   <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">

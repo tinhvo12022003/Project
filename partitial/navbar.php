@@ -49,6 +49,7 @@ include_once __DIR__ . "/connect.php";
             </form>
 
             <?php
+            ob_start();
             if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
                 $query = "SELECT * FROM users WHERE username = ? AND password = ?";
                 $statment = $connect->prepare($query);
@@ -57,14 +58,20 @@ include_once __DIR__ . "/connect.php";
 
                 $path = "";
 
-                if(htmlspecialchars($result['picture']) === ""){
+                if(htmlspecialchars($result['picture']) == ""){
                     $path = "default-avatar.png";
                 } else {
                     $path = htmlspecialchars($result['picture']);
                 }
                 echo "
-                    <img src='../image/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
-                    <a href='logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
+                    <a href='client/client.php'>
+                        <img src='image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
+                    </a>
+                    <ul class='navbar-nav '>
+                        <li class='nav-item'>
+                            <a href='logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
+                        </li>
+                    </ul>
                 ";
             } else {
                 echo "
@@ -81,6 +88,7 @@ include_once __DIR__ . "/connect.php";
                     </ul>
                     ";
             }
+            ob_end_flush();
             ?>
 
         </div>

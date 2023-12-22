@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "../../partitial/connect.php";
+// session_start();
 ?>
 
 <!DOCTYPE html>
@@ -92,9 +93,8 @@ require_once __DIR__ . "../../partitial/connect.php";
 </html>
 
 
-<?php 
-require_once __DIR__ . "../../vendor/autoload.php";
-
+<?php
+require_once __DIR__ . "../../partitial/connect.php";
 $id = "";
 $username = "";
 $password = "";
@@ -109,80 +109,82 @@ $firstname = "";
 $lastname = "";
 $fullname = "";
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
-    for($i=0; $i<9; $i++){ 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+    for ($i = 0; $i < 9; $i++) {
         $id .= random_int(0, 9);
     }
 
-    if(isset($_POST['firstname']) && !empty($_POST['firstname'])){
+    if (isset($_POST['firstname']) && !empty($_POST['firstname'])) {
         $firstname = $_POST['firstname'];
     }
 
-    if(isset($_POST['lastname']) && !empty($_POST['lastname'])){
+    if (isset($_POST['lastname']) && !empty($_POST['lastname'])) {
         $lastname = $_POST['lastname'];
     }
 
     $fullname = $lastname . " " . $firstname;
 
-    if(isset($_POST['email']) && !empty($_POST['email'])){
+    if (isset($_POST['email']) && !empty($_POST['email'])) {
         $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
     }
 
-    if(isset($_POST['phone']) && !empty($_POST['phone'])){
+    if (isset($_POST['phone']) && !empty($_POST['phone'])) {
         $phone = filter_var($_POST['phone'], FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[0-9]{10,}$/")));
     }
 
-    if(isset($_POST['username']) && !empty($_POST['username'])){
+    if (isset($_POST['username']) && !empty($_POST['username'])) {
         $username = $_POST['username'];
     }
 
-    if(isset($_POST['password']) && !empty($_POST['password'])){
+    if (isset($_POST['password']) && !empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     }
 
-    if(isset($_POST['address']) && !empty($_POST['address'])){
+    if (isset($_POST['address']) && !empty($_POST['address'])) {
         $address = $_POST['address'];
     }
 
-    if(isset($_POST['birthday']) && !empty($_POST['birthday'])){
+    if (isset($_POST['birthday']) && !empty($_POST['birthday'])) {
         $birthday = date("Y-m-d", strtotime($_POST['birthday']));
     }
 
-    if(isset($_POST['gender']) && !empty($_POST['gender'])){
+    if (isset($_POST['gender']) && !empty($_POST['gender'])) {
         $gender = intval($_POST['gender']);
     }
-    
-    if(isset($_POST['submit'])){
-        if(isset($_FILES['img']) && !empty($_FILES['img']['name'])){
+
+    if (isset($_POST['submit'])) {
+        if (isset($_FILES['img']) && !empty($_FILES['img']['name'])) {
             $url_picture = $_FILES['img']['name'];
-        }   
+            if (move_uploaded_file($_FILES['img']['tmp_name'], __DIR__ . "/image/avatar/" . $url_picture)) {
+                // Thành công khi upload
+            } else {
+                // Lỗi khi upload
+                echo "Failed to upload image!";
+            }
+        }
     }
 
-    if((new Main\Autoload\UserModel())->Check_User($username, $password) == false){ //if hasn't account
-        $query = "INSERT INTO users (id, username, password, email, gender, picture, role, birthday, phone, address, fullname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $connect->prepare($query);
-        $stmt->execute([$id, $username, $password, $email, $gender, $url_picture, $role, $birthday, $phone, $address, $fullname]);
-
-        echo "
-        <script>
-            alert('Sign up successfully!');
-        </script>
-        ";
-
+    $query = "INSERT INTO users(id, username, email, password, role, fullname, picture, gender, phone, address, birthday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $statment = $connect->prepare($query);
+    $statment->execute([$id, $username, $email, $password, $role, $fullname, $url_picture, $gender, $phone, $address, $birthday]);
+    
+    if($statment->rowCount() > 0){
         $_SESSION['username'] = $username;
         $_SESSION['password'] = $password;
-        $_SESSION['role'] = $role;
-        $_SESSION['expire'] = time() + 3600;
-
-
-        header("location: ../../public/index.php");
+        $_SESSION['id'] = $id;
+        $_SESSION['img'] = $url_picture;
+        echo "
+            <script>
+                window.location.href = 'index.php'
+            </script>";
+        exit();
     } else {
         echo "
             <script>
-                alert('Username already exists!');
+                alert('Sign up failed!');
             </script>
         ";
     }
-}
 
+}
 ?>
