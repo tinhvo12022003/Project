@@ -32,7 +32,7 @@
             <div class="col-sm-12 col-md-7">
                 <h1 class="h1 bold text-center p-3">Login now</h1>
 
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="p-3 form" id="form-login">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="p-3 form" id="form-login" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="username" class="form-label font-weight-bold">Username</label>
                         <input type="text" name="username" id="username" class="form-control">
@@ -95,10 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($statement->rowCount() > 0) {
         if(password_verify($password, $result['password'])){
-            $_SESSION['username'] = $result['username'];
-            $_SESSION['password'] = $result['password'];
-            $_SESSION['id'] = $result['id'];
-            $_SESSION['img'] = $result['picture'];
+            $_SESSION['username'] = htmlspecialchars($result['username']);
+            $_SESSION['password'] = htmlspecialchars($result['password']);
+            $_SESSION['id'] = htmlspecialchars($result['id']);
+            $_SESSION['img'] = htmlspecialchars($result['picture']);
+            $_SESSION['role'] = htmlspecialchars($result['role']);
+            $_SESSION['expire'] = time() + 3600;
             echo "
             <script>
                 alert('Login Success');

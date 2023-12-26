@@ -19,14 +19,14 @@
     <?php
     session_start();
     require_once __DIR__ . "../../../partitial/connect.php";
-    // if ($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))) {
-    //     echo "
-    //         <script>
-    //             alert('You don't have permission to access this page');
-    //         </script>
-    //     ";
-    //     header("Location: ../index.php");
-    // }
+    if ($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))) {
+        echo "
+            <script>
+                alert('You don't have permission to access this page');
+            </script>
+        ";
+        header("Location: ../index.php");
+    }
 
 
     ?>
@@ -156,3 +156,80 @@
 </body>
 
 </html>
+
+<?php 
+$fullname = "";
+$username = "";
+$email = "";
+$phone = "";
+$old_password = "";
+$new_password = "";
+$confirm_new_password = "";
+$new_url_img = "";
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if(isset($_POST['fullname_admin_edit']) && !empty($_POST['fullname_admin_edit'])){
+        $fullname = $_POST['fullname_admin_edit'];
+    }
+
+    if(isset($_POST['username_admin_edit']) && !empty($_POST['username_admin_edit'])){
+        $username = $_POST['username_admin_edit'];
+    }
+
+    if(isset($_POST['email_admin_edit']) && !empty($_POST['email_admin_edit'])){
+        $email = $_POST['email_admin_edit'];
+    }
+
+    if(isset($_POST['phone_admin_edit']) && !empty($_POST['phone_admin_edit'])){
+        $phone = $_POST['phone_admin_edit'];
+    }
+
+    if(isset($_POST['password_admin_edit']) && !empty($_POST['password_admin_edit'])){
+        $old_password = password_hash($_POST['password_admin_edit'], PASSWORD_BCRYPT);
+    }
+
+    if(isset($_POST['change_admin_password']) && !empty($_POST['change_admin_password'])){
+        $new_password = password_hash($_POST['change_admin_password'], PASSWORD_BCRYPT);
+    }
+
+    if(isset($_POST['confirm_pwd_admin']) && !empty($_POST['confirm_pwd_admin'])){
+        $confirm_new_password = password_hash($_POST['confirm_pwd_admin'], PASSWORD_BCRYPT);
+    }
+    $query = "SELECT * FROM admin WHERE username = ? AND password = ?";
+    $statment = $connect->prepare($query);
+    $statment->execute([$username, $old_password]);
+
+    if($statment->rowCount() > 0){
+        if($old_password === $new_password){
+            if($new_password === $confirm_new_password){
+                $query = "UPDATE admin SET fullname = ?, username = ?, email = ?, phone = ?, password = ? WHERE username = ? AND password = ?";
+                $statment = $connect->prepare($query);
+                $statment->execute([$fullname, $username, $email, $phone, $new_password, $username, $old_password]);
+                echo "
+                    <script>
+                        alert('Edit success');
+                    </script>
+                ";
+            } else {
+                echo "
+                    <script>
+                        alert('The confirm password must be the same as the new password');
+                    </script>
+                ";
+            }
+        } else {
+            echo "
+                <script>
+                    alert('The old password must be the same as the new password');
+                </script>
+            ";
+        }
+    } else {
+        echo "
+            <script>
+                alert('Account not found!');
+            </script>
+        ";
+    }
+}
+?>

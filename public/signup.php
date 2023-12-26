@@ -169,10 +169,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
     $statment->execute([$id, $username, $email, $password, $role, $fullname, $url_picture, $gender, $phone, $address, $birthday]);
     
     if($statment->rowCount() > 0){
-        $_SESSION['username'] = $username;
-        $_SESSION['password'] = $password;
-        $_SESSION['id'] = $id;
-        $_SESSION['img'] = $url_picture;
+        $_SESSION['username'] = htmlspecialchars($result['username']);
+        $_SESSION['password'] = htmlspecialchars($result['password']);
+        $_SESSION['id'] = htmlspecialchars($result['id']);
+        $_SESSION['img'] = htmlspecialchars($result['picture']);
+        $_SESSION['role'] = htmlspecialchars($result['role']);
+        $_SESSION['expire'] = time() + 3600;
         echo "
             <script>
                 window.location.href = 'index.php'

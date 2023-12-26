@@ -51,17 +51,10 @@ include_once __DIR__ . "/connect.php";
             <?php
             ob_start();
             if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
-                $query = "SELECT * FROM users WHERE username = ? AND password = ?";
-                $statment = $connect->prepare($query);
-                $statment->execute([$_SESSION['username'], $_SESSION['password']]);
-                $result = $statment->fetch(PDO::FETCH_ASSOC);
-
-                $path = "";
-
-                if(htmlspecialchars($result['picture']) == ""){
-                    $path = "default-avatar.png";
-                } else {
-                    $path = htmlspecialchars($result['picture']);
+                if($_SESSION['role'] == 'client'){
+                    $path = "user_img/" . $_SESSION['img'];
+                } else if($_SESSION['role'] == 'admin'){
+                    $path = "admin_img/" . $_SESSION['img'];
                 }
                 echo "
                     <a href='client/client.php'>

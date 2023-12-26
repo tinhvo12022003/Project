@@ -18,7 +18,7 @@
 <body>
     <?php
     session_start();
-
+    require_once __DIR__ . "../../../partitial/connect.php";
     // if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
     //     echo "
     //         <script>
@@ -28,7 +28,7 @@
     //     header("Location: ../index.php");
     // }
 
-    require_once __DIR__ . "../../../partitial/connect.php";
+    
     ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="../index.php">
@@ -99,45 +99,52 @@
 
         </div>
     </nav>
-    </div>
 
 
-    <div class="container pt-5 ">
+    <div class="container p-3 ">
         <div class="row ">
             <div class="col-10 offset-1 border shadow rounded pt-5 pb-5">
                 <h2 class="h2 text-center text-success">ADD ADMIN</h2>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="pt-3">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="pt-3" enctype="multipart/form-data">
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="fullname_admin" class="col-sm-2 col-form-label">Full name admin</label>
-                        <input type="text" name="fullname_admin" id="fullname_admin" class="form-control col-sm-5">
+                        <input type="text" name="fullname_admin" id="fullname_admin" class="form-control col-sm-5" placeholder="Enter full name..." required>
                     </div>
 
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="username_admin" class="col-sm-2 col-form-label">Username admin</label>
-                        <input type="text" name="username_admin" id="username_admin" class="form-control col-sm-5">
+                        <input type="text" name="username_admin" id="username_admin" class="form-control col-sm-5" placeholder="Enter username..." required>
                     </div>
 
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="email_admin" class="col-sm-2 col-form-label">Email admin</label>
-                        <input type="email" name="email_admin" id="email_admin" class="form-control col-sm-5">
+                        <input type="email" name="email_admin" id="email_admin" class="form-control col-sm-5" placeholder="Enter email..." required> 
                     </div>
 
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="phone_admin" class="col-sm-2 col-form-label">Phone admin</label>
-                        <input type="text" name="phone_admin" id="phone_admin" class="form-control col-sm-5">
+                        <input type="text" name="phone_admin" id="phone_admin" class="form-control col-sm-5" placeholder="Enter phone..." required>
                     </div>
 
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="password_admin" class="col-sm-2 col-form-label">Password admin</label>
-                        <input type="password" name="password_admin" id="password_admin" class="form-control col-sm-5">
+                        <input type="password" name="password_admin" id="password_admin" class="form-control col-sm-5" placeholder="Enter password..." required>
                     </div>
 
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="confirm_pwd_admin" class="col-sm-2 col-form-label">Confirm password admin</label>
-                        <input type="password" name="confirm_pwd_admin" id="confirm_pwd_admin" class="form-control col-sm-5">
+                        <input type="password" name="confirm_pwd_admin" id="confirm_pwd_admin" class="form-control col-sm-5" placeholder="Enter confirm password..." required>
                     </div>
 
-                    <button type="submit" class="btn btn-success offset-5 col-3">Add admin</button>
+                    <div class="form-group row align-items-center justify-content-center">
+                        <label for="img_admin" class="col-sm-2 col-form-label">Choose picture</label>
+                        <input type="file" name="img_admin" id="img_admin" class="form-control col-sm-5">
+                    </div>
+
+                    <div class="row align-items-center justify-content-center">
+                        <button type="submit" class="btn btn-success col-sm-2 m-4" name="submit">Add admin</button>
+                        <button type="reset" class="btn btn-danger col-sm-2">Reset</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -145,3 +152,67 @@
 </body>
 
 </html>
+
+<?php
+$fullname_admin = "";
+$username_admin = "";
+$email_admin = "";
+$phone_admin = "";
+$password_admin = "";
+$role = "admin";
+$url_picture = "";
+$id = "";
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if(isset($_POST['fullname_admin']) && !empty($_POST['fullname_admin'])){
+        $fullname_admin = $_POST['fullname_admin'];
+    }
+
+    if(isset($_POST['username_admin']) && !empty($_POST['username_admin'])){
+        $username_admin = $_POST['username_admin'];
+    }
+
+    if(isset($_POST['email_admin']) && !empty($_POST['email_admin'])){
+        $email_admin = $_POST['email_admin'];
+    }
+
+    if(isset($_POST['phone_admin']) && !empty($_POST['phone_admin'])){
+        $phone_admin = $_POST['phone_admin'];
+    }
+
+    if(isset($_POST['password_admin']) && !empty($_POST['password_admin'])){
+        $password_admin = password_hash($_POST['password_admin'], PASSWORD_BCRYPT);
+    }
+
+    if($_POST['submit']){
+        if(isset($_POST['img_admin']) && !empty($_FILES['img_admin']['name'])){
+            $url_picture = $_FILES['img_admin']['name'];
+            move_uploaded_file($_FILES['img_admin']['tmp_name'], "../image/admin_img/" . $url_picture);  
+        }
+    }
+
+    $query = "SELECT * FROM admin WHERE username_admin = ?";
+    $statment = $connect->prepare($query);
+    $statment->execute([$username_admin]);
+    $statment->fetch(PDO::FETCH_ASSOC);
+    if($statment->rowCount() > 0){
+        echo "
+            <script>
+                alert('Username already exist');
+            </script>
+        ";
+    } else {
+        for($i=1; $i<=10; $i++){$id .= random_int(0, 9);}
+        $query = "INSERT INTO admin(fullname, username_admin, password_admin, email, phone, role, id, picture)";
+        $statment = $connect->prepare($query);
+        $statment->execute([$fullname_admin, $username_admin, $password_admin, $email_admin, $phone_admin, $role, $id, $url_picture]);
+
+        echo "
+            <script>
+                alert('Add admin successful');
+            </script>
+        ";
+        header("Location: admin.php");
+    }
+}
+?>

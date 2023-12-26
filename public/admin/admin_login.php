@@ -45,6 +45,7 @@
 
 <?php 
 session_start();
+
 require_once __DIR__ . "../../../partitial/connect.php";
 
 $username_admin = "";
@@ -71,7 +72,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['img'] = htmlspecialchars($result['picture']);
         $_SESSION['role'] = htmlspecialchars($result['role']);
         $_SESSION['expire'] = time() + 3600;
+        header("Location: admin.php");
     }
 }
-
 ?>
