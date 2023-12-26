@@ -69,7 +69,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['id'] = htmlspecialchars($result['id']);
         $_SESSION['username_admin'] = htmlspecialchars($result['username_admin']);
         $_SESSION['password_admin'] = htmlspecialchars($result['password_admin']);
-        $_SESSION['img'] = htmlspecialchars($result['picture']);
+        if(htmlspecialchars($result['picture']) === ""){
+            $_SESSION['img'] = "default.png";
+        } else {
+            $_SESSION['img'] = htmlspecialchars($result['picture']);
+        }
         $_SESSION['role'] = htmlspecialchars($result['role']);
         $_SESSION['expire'] = time() + 3600;
         header("Location: admin.php");

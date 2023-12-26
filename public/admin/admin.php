@@ -19,14 +19,14 @@
     <?php
     session_start();
 
-    // if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
-    //     echo "
-    //         <script>
-    //             alert('You don't have permission to access this page');
-    //         </script>
-    //     ";
-    //     header("Location: ../index.php");
-    // }
+    if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
+        echo "
+            <script>
+                alert('You don't have permission to access this page');
+            </script>
+        ";
+        header("Location: ../index.php");
+    }
 
     require_once __DIR__ . "../../../partitial/connect.php";
     ?>
