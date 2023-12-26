@@ -44,7 +44,8 @@
 
 </html>
 
-<?php 
+
+<?php
 session_start();
 
 require_once __DIR__ . "../../../partitial/connect.php";
@@ -52,32 +53,34 @@ require_once __DIR__ . "../../../partitial/connect.php";
 $username_admin = "";
 $password_admin = "";
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(isset($_POST['username_admin']) && !empty($_POST['username_admin'])){
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['username_admin']) && !empty($_POST['username_admin'])) {
         $username_admin = $_POST['username_admin'];
     }
 
-    if(isset($_POST['password_admin']) && !empty($_POST['password_admin'])){
-        $password_admin = password_hash($_POST['password_admin'], PASSWORD_BCRYPT);
+    if (isset($_POST['password_admin']) && !empty($_POST['password_admin'])) {
+        $password_admin = $_POST['password_admin'];
     }
 
-    $query = "SELECT * FROM admin WHERE username_admin = ? AND password_admin = ?";
+    $query = "SELECT * FROM admin WHERE username_admin = ?";
     $statment = $connect->prepare($query);
-    $statment->execute([$username_admin, $password_admin]);
+    $statment->execute([$username_admin]);
     $result = $statment->fetch(PDO::FETCH_ASSOC);
 
-    if($result){
-        $_SESSION['id'] = htmlspecialchars($result['id']);
-        $_SESSION['username_admin'] = htmlspecialchars($result['username_admin']);
-        $_SESSION['password_admin'] = htmlspecialchars($result['password_admin']);
-        if(htmlspecialchars($result['picture']) === ""){
-            $_SESSION['img'] = "default.png";
+    if ($result !== false) {
+        if (password_verify($password_admin, $result['password_admin'])) {
+            $_SESSION['id'] = htmlspecialchars($result['id']);
+            $_SESSION['username_admin'] = htmlspecialchars($result['username_admin']);
+            $_SESSION['password_admin'] = htmlspecialchars($result['password_admin']);
+            $_SESSION['img'] = empty($result['picture']) ? "default-avatar.png" : htmlspecialchars($result['picture']);
+            $_SESSION['role'] = htmlspecialchars($result['role']);
+            $_SESSION['expire'] = time() + 3600;
+            header("Location: admin.php");
+            exit();
         } else {
-            $_SESSION['img'] = htmlspecialchars($result['picture']);
+            echo "<script>alert('Wrong password');</script>";
         }
-        $_SESSION['role'] = htmlspecialchars($result['role']);
-        $_SESSION['expire'] = time() + 3600;
-        header("Location: admin.php");
     }
 }
 ?>
+

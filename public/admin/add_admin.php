@@ -87,11 +87,11 @@
                 }
                 echo "
                 <a href='edit_admin.php'>
-                    <img src='image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
+                    <img src='../image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
                 </a>
                     <ul class='navbar-nav '>
                         <li class='nav-item'>
-                            <a href='logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
+                            <a href='../logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
                         </li>
                     </ul>
                 ";
