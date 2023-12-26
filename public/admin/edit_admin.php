@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="../js/check_edit_admin.js"></script>
 </head>
 
 <body>
@@ -112,7 +113,12 @@
 
                     <div class="form-group row">
                         <label for="username_admin_edit" class="col-sm-3 form-label">Username</label>
-                        <input type="text" name="username_admin_edit" id="username_admin_edit" class="form-control col-sm-9" required placeholder="Enter new username">
+                        <input type="text" name="username_admin_edit" id="username_admin_edit" class="form-control col-sm-9" required placeholder="Enter username">
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username_admin_edit" class="col-sm-3 form-label">New username</label>
+                        <input type="text" name="new_username_admin_edit" id="new_username_admin_edit" class="form-control col-sm-9" required placeholder="Enter new username">
                     </div>
 
                     <div class="form-group row">
@@ -160,6 +166,7 @@
 <?php 
 $fullname = "";
 $username = "";
+$new_username = "";
 $email = "";
 $phone = "";
 $old_password = "";
@@ -174,6 +181,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     if(isset($_POST['username_admin_edit']) && !empty($_POST['username_admin_edit'])){
         $username = $_POST['username_admin_edit'];
+    }
+
+    if(isset($_POST['new_username_admin_edit']) && !empty($_POST['new_username_admin_edit'])){
+        $new_username = $_POST['new_username_admin_edit'];
     }
 
     if(isset($_POST['email_admin_edit']) && !empty($_POST['email_admin_edit'])){
@@ -204,7 +215,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             if($new_password === $confirm_new_password){
                 $query = "UPDATE admin SET fullname = ?, username = ?, email = ?, phone = ?, password = ? WHERE username = ? AND password = ?";
                 $statment = $connect->prepare($query);
-                $statment->execute([$fullname, $username, $email, $phone, $new_password, $username, $old_password]);
+                $statment->execute([$fullname, $new_username, $email, $phone, $new_password, $username, $old_password]);
                 echo "
                     <script>
                         alert('Edit success');

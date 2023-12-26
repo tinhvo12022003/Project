@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="../js/check_login.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
         <div class="row">
             <div class="col-10 offset-1 pt-5 pt-5 border rounded shadow">
             <h2 class="text-center h2 text-success">Admin Login</h2>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" class="">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" id="admin_login">
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="username_admin" class="col-sm-2 col-form-label">Username</label>
                         <input type="text" name="username_admin" id="username_admin" class="col-5 form-control">

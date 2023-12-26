@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="../js/check_delete_admin.js"></script>
 </head>
 
 <body>
@@ -103,7 +104,7 @@
         <div class="row">
             <div class="col-sm-8 offset-2 border rounded shadow">
                 <h2 class="text-center mt-5 text-danger">Delete admin</h2>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" class="mt-4">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" class="mt-4" id="form_delete_admin">
                     <div class="form-group row">
                         <label for="username_admin_delete" class="col-sm-2 col-form-label">Username</label>
                         <input type="text" name="username_admin_delete" id="username_admin_delete" class="form-control col-sm-8" placeholder="Enter username" required>

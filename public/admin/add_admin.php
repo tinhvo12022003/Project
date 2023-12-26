@@ -13,12 +13,14 @@
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="../js/check_add_admin.js"></script>
 </head>
 
 <body>
     <?php
     session_start();
     require_once __DIR__ . "../../../partitial/connect.php";
+
     if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
         echo "
             <script>
@@ -105,7 +107,7 @@
         <div class="row ">
             <div class="col-10 offset-1 border shadow rounded pt-5 pb-5">
                 <h2 class="h2 text-center text-success">ADD ADMIN</h2>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="pt-3" enctype="multipart/form-data">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="pt-3" enctype="multipart/form-data" id="form_add_admin">
                     <div class="form-group row align-items-center justify-content-center">
                         <label for="fullname_admin" class="col-sm-2 col-form-label">Full name admin</label>
                         <input type="text" name="fullname_admin" id="fullname_admin" class="form-control col-sm-5" placeholder="Enter full name..." required>
