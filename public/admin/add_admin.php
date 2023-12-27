@@ -66,9 +66,9 @@
                         Editor Menu
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Add food</a>
-                        <a class="dropdown-item" href="#">Delete food</a>
-                        <a class="dropdown-item" href="#">Edit food</a>
+                        <a class="dropdown-item" href="add_food.php">Add food</a>
+                        <a class="dropdown-item" href="delete_food.php">Delete food</a>
+                        <a class="dropdown-item" href="edit_food.php">Edit food</a>
                     </div>
                 </li>
             </ul>

@@ -17,18 +17,20 @@
 
 <body>
     <?php
-    session_start();
 
-    if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
+    session_start();
+    require_once __DIR__ . "../../../partitial/connect.php";
+
+    if ($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))) {
         echo "
-            <script>
-                alert('You don't have permission to access this page');
-            </script>
-        ";
+        <script>
+            alert('You don't have permission to access this page');
+        </script>
+    ";
         header("Location: ../index.php");
     }
 
-    require_once __DIR__ . "../../../partitial/connect.php";
+    ob_start();
     ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="../index.php">
@@ -76,31 +78,93 @@
             </form>
 
             <?php
-            ob_start();
             if (isset($_SESSION['username_admin']) && isset($_SESSION['password_admin'])) {
                 if ($_SESSION['role'] == 'admin') {
                     $path = "admin_img/" . $_SESSION['img'];
-                } else if ($_SESSION['role'] == 'admin') {
-                    $path = "admin_img/" . $_SESSION['img'];
                 }
                 echo "
-                <a href='edit_admin.php'>
-                    <img src='../image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
-                </a>
-                    <ul class='navbar-nav '>
-                        <li class='nav-item'>
-                            <a href='../logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
-                        </li>
-                    </ul>
-                ";
+            <a href='edit_admin.php'>
+                <img src='../image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
+            </a>
+                <ul class='navbar-nav '>
+                    <li class='nav-item'>
+                        <a href='../logout.php' class='nav-link my-2 my-sm-0'>Log out</a>
+                    </li>
+                </ul>
+            ";
             }
-            ob_end_flush();
+
             ?>
 
         </div>
     </nav>
-    </div>
 
+    <div class='container-fluid p-5'>
+        <div class='row'>
+            <div class='col'>
+                <img src="../image/product_picture/delete_product.png" alt="" class="img-fluid" width="100%">
+                <table class='table'>
+                    <thead class='thead-dark text-center'>
+                        <th scope='col'>ID</th>
+                        <th scope='col'>Name</th>
+                        <th scope='col'>Price</th>
+                        <th scope='col'>Picture</th>
+                        <th scope='col'>Description</th>
+                        <th scope='col'>Del</th>
+                    </thead>
+
+                    <tbody>
+
+                        <?php
+
+                        $query = "SELECT * FROM products";
+                        $statment = $connect->prepare($query);
+                        $statment->execute();
+                        $products = $statment->fetchAll(PDO::FETCH_ASSOC);
+
+
+                        foreach ($products as $product) {
+                            $path = ($product['picture'] !== "") ? $product['picture'] : "food-default.png";
+                            echo "<tr class='justify-content-center align-items-center'>
+                        <td class='text-center'>" . $product['id'] . "</td>
+                        <td class='text-center'>" . $product['product_name'] . "</td>
+                        <td class='text-center'>" . $product['price'] . "</td>
+                        <td class='text-center'>
+                            <img src='../image/product_picture/" . $path . "' class='img-fluid' width='350' height='auto'>
+                        </td>
+                        <td>" . $product['description'] . "</td>
+                        <td class='text-center'>
+                            <form action='" . $_SERVER['PHP_SELF'] . "' method='POST' enctype='multipart/form-data'>
+                                <input type='hidden' name='id' value='" . $product['id'] . "'>
+                                <button type='submit' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this product?\");'>Delete</button>
+                            </form>
+                        </td>
+                    </tr>";
+                        }
+                        $id = "";
+                        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+                            if (isset($_POST['id']) && !empty($_POST['id'])) {
+                                $id = $_POST['id'];
+                            }
+                            $query = "DELETE FROM products WHERE id = ?";
+                            $statment = $connect->prepare($query);
+                            $statment->execute([$id]);
+                            echo "
+        <script>
+            window.location.href = 'delete_food.php';
+        </script>
+    ";
+                            exit();
+                        }
+
+                        ob_end_flush();
+                        ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

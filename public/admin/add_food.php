@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,11 +13,11 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 </head>
-
 <body>
-    <?php
-    session_start();
+<?php
 
+    session_start();
+    require_once __DIR__ . "../../../partitial/connect.php";
     if($_SESSION['role'] == 'client' || (!isset($_SESSION['username_admin']) && !isset($_SESSION['password_admin']))){
         echo "
             <script>
@@ -28,7 +27,7 @@
         header("Location: ../index.php");
     }
 
-    require_once __DIR__ . "../../../partitial/connect.php";
+
     ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="../index.php">
@@ -80,9 +79,7 @@
             if (isset($_SESSION['username_admin']) && isset($_SESSION['password_admin'])) {
                 if ($_SESSION['role'] == 'admin') {
                     $path = "admin_img/" . $_SESSION['img'];
-                } else if ($_SESSION['role'] == 'admin') {
-                    $path = "admin_img/" . $_SESSION['img'];
-                }
+                } 
                 echo "
                 <a href='edit_admin.php'>
                     <img src='../image/avatar/" . $path . "' class='rounded-circle p-1' width='50' height='50'>
@@ -99,8 +96,100 @@
 
         </div>
     </nav>
+
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 border rounded shadow p-5">
+                <div class="justify-content-center align-items-center">
+                    <img src="../image/product_picture/add_food.png" alt="" class="img-fluid">
+                </div>
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" id="form-add-product">
+                    <div class="form-group row">
+                        <label for="product_id" class="col-sm-3 col-form-label">ID product</label>
+                        <input type="text" name="product_id" id="product_id" class="form-control col-sm-9" required placeholder="Enter product name">
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="product_name" class="col-sm-3 col-form-label">Product name</label>
+                        <input type="text" name="product_name" id="product_name" class="form-control col-sm-9" required placeholder="Enter product name">
+                    </div>
+                    <div class="form-group row">
+                        <label for="price" class="col-sm-3 col-form-label">Price</label>
+                        <input type="text" name="price" id="price" class="form-control col-sm-9" required placeholder="Enter price">
+                    </div>
+                    <div class="form-group row">
+                        <label for="picture_product" class="col-sm-3 col-form-label">Picture product</label>
+                        <input type="file" name="picture_product" id="picture_product" class="form-control col-sm-9">
+                    </div>
+                    <div class="form-group row">
+                        <label for="description" class="col-sm-3 col-form-label">Description</label>
+                        <textarea name="description" id="description" cols="30" rows="5" class="form-control col-sm-9" placeholder="Enter description"></textarea>
+                    </div>
+
+                    <div class="row justify-content-center align-items-center pt-5">
+                        <button type="submit" class="btn btn-success col-md-3" name="submit">Add</button>
+                        <button type="reset" class="btn btn-danger col-md-3 ml-3">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
 </body>
-
 </html>
+
+<?php 
+ob_start();
+$product_name = "";
+$price = "";
+$description = "";
+$url_picture = "";
+$id = "";
+
+if($_SERVER['REQUEST_METHOD'] == "POST"){
+    if(isset($_POST['product_id']) && !empty($_POST['product_id'])){
+        $id = $_POST['product_id'];
+    }
+
+    if(isset($_POST['product_name']) && !empty($_POST['product_name'])){
+        $product_name = $_POST['product_name'];
+    }
+
+    if(isset($_POST['price']) && !empty($_POST['price'])){
+        $price = doubleval($_POST['price']);
+    }
+
+    if(isset($_POST['description']) && !empty($_POST['description'])){
+        $description = $_POST['description'];
+    }
+
+    if(isset($_POST['submit'])){
+        if(isset($_FILES['picture_product']) && !empty($_FILES['picture_product']['name'])){
+            $url_picture = $_FILES['picture_product']['name'];
+        }
+    }
+
+    $query = "SELECT * FROM products WHERE id = ?";
+    $statment = $connect->prepare($query);
+    $statment->execute([$id]);
+
+    if($statment->rowCount() > 0){
+        echo "
+            <script>
+                alert('Product's ID already exists');
+            </script>
+        ";
+    } else {
+        $query = "INSERT INTO products(id, product_name, price, description, picture) VALUES (?, ?, ?, ?, ?)";
+        $statment = $connect->prepare($query);
+        $statment->execute([$id, $product_name, $price, $description, $url_picture]);
+        move_uploaded_file($_FILES['picture_product']['tmp_name'], "../image/product_picture/" . $url_picture);
+        echo "
+            <script>
+                alert('Add product successful');
+            </script>
+        ";
+    }
+} 
+
+ob_end_flush();
+?>
