@@ -106,7 +106,7 @@
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" id="form-add-product">
                     <div class="form-group row">
                         <label for="product_id" class="col-sm-3 col-form-label">ID product</label>
-                        <input type="text" name="product_id" id="product_id" class="form-control col-sm-9" required placeholder="Enter product name">
+                        <input type="text" name="product_id" id="product_id" class="form-control col-sm-9" required placeholder="Enter product ID">
                     </div>
 
                     <div class="form-group row">
@@ -121,6 +121,16 @@
                         <label for="picture_product" class="col-sm-3 col-form-label">Picture product</label>
                         <input type="file" name="picture_product" id="picture_product" class="form-control col-sm-9">
                     </div>
+
+                    <div class="form-group row">
+                        <label for="type_product" class="col-sm-3 col-form-label">Type product</label>
+                        <select name="type_product" id="type_product" class="form-control col-sm-9">
+                            <option value="burger" class="form-control" active>Burger</option>
+                            <option value="pizza" class="form-control">Pizza</option>
+                            <option value="drink" class="form-control">Drink</option>
+                        </select>
+                    </div>
+
                     <div class="form-group row">
                         <label for="description" class="col-sm-3 col-form-label">Description</label>
                         <textarea name="description" id="description" cols="30" rows="5" class="form-control col-sm-9" placeholder="Enter description"></textarea>
@@ -144,6 +154,7 @@ $price = "";
 $description = "";
 $url_picture = "";
 $id = "";
+$type = "";
 
 if($_SERVER['REQUEST_METHOD'] == "POST"){
     if(isset($_POST['product_id']) && !empty($_POST['product_id'])){
@@ -168,6 +179,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         }
     }
 
+    if(isset($_POST['type_product']) && !empty($_POST['type_product'])){
+        $type = $_POST['type_product'];
+    }
+
     $query = "SELECT * FROM products WHERE id = ?";
     $statment = $connect->prepare($query);
     $statment->execute([$id]);
@@ -179,9 +194,9 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             </script>
         ";
     } else {
-        $query = "INSERT INTO products(id, product_name, price, description, picture) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO products(id, product_name, price, description, picture, type) VALUES (?, ?, ?, ?, ?, ?)";
         $statment = $connect->prepare($query);
-        $statment->execute([$id, $product_name, $price, $description, $url_picture]);
+        $statment->execute([$id, $product_name, $price, $description, $url_picture, $type]);
         move_uploaded_file($_FILES['picture_product']['tmp_name'], "../image/product_picture/" . $url_picture);
         echo "
             <script>
