@@ -12,6 +12,7 @@
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="../js/check_add_food.js"></script>
 </head>
 <body>
 <?php
@@ -197,7 +198,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         $query = "INSERT INTO products(id, product_name, price, description, picture, type) VALUES (?, ?, ?, ?, ?, ?)";
         $statment = $connect->prepare($query);
         $statment->execute([$id, $product_name, $price, $description, $url_picture, $type]);
-        move_uploaded_file($_FILES['picture_product']['tmp_name'], "../image/product_picture/" . $url_picture);
+        move_uploaded_file($_FILES['picture_product']['tmp_name'], "../image/product_picture/".strtolower($type). '/' . $url_picture);
         echo "
             <script>
                 alert('Add product successful');
