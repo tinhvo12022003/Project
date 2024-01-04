@@ -28,13 +28,13 @@
     </ol>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img class="d-block" src="image/banner1.png" alt="First slide" width="100%" height="400px">
+        <img class="d-block" src="image/banner/banner1.png" alt="First slide" width="100%" height="400px">
       </div>
       <div class="carousel-item">
-        <img class="d-block" src="image/banner2.png" alt="Second slide" width="100%" height="400px">
+        <img class="d-block" src="image/banner/banner2.png" alt="Second slide" width="100%" height="400px">
       </div>
       <div class="carousel-item">
-        <img class="d-block" src="image/banner3.png" alt="Third slide" width="100%" height="400px">
+        <img class="d-block" src="image/banner/banner3.png" alt="Third slide" width="100%" height="400px">
       </div>
     </div>
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -76,7 +76,7 @@
 
 
       <h3 class="h3 pt-3">New recipes</h3>
-      <a href="" class="text-decoration-none" target="_blank">See full products</a>
+      <a href="list_food.php" class="text-decoration-none" target="_blank">See full products</a>
 
       <hr>
       <div class="row">
