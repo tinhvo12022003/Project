@@ -10,14 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/c858f5b048.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/food.css">
+    <link rel="stylesheet" href="css/food_.css">
     <link rel="shortcut icon" href="image/favicons/home-page-favicon.jpg" type="image/x-icon">
     <script src="js/script_food.js"></script>
 </head>
 
 <body>
     <?php require_once __DIR__ . "../../partitial/navbar.php" ?>
-    <div class="image-container">
+    <div class="image-container" style="width: 100%; height: 300px;overflow: hidden;">
         <img src="image/food_img/bg_food.png" alt="Background Food">
     </div>
     <div class="container-fluid pt-3 shadow rounded">
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container-fuild">
         <div class="row">
             <div class="col">
                 <?php
@@ -63,31 +63,31 @@
                         $result = $statment->fetchAll(PDO::FETCH_ASSOC);
 
                         echo '
-                            <div id="carouselExampleIndicators" class="carousel slide p-5 shadow mt-4" data-ride="carousel">
+                            <div id="carouselExampleIndicators" class="carousel slide p-3 shadow rounded mt-4" data-ride="carousel">
                                 <ol class="carousel-indicators">
                                     
                             ';
 
-                        
+
                         echo '</ol>
                             <div class="carousel-inner">
                             ';
                         $active = "active";
-                        for ($i = 0; $i < $statment->rowCount(); $i += 4) {
+                        for ($i = 0; $i < $statment->rowCount(); $i += 3) {
                             echo '<div class="carousel-item ' . $active . '">';
                             echo '<div class="row">';
-                            for ($j = $i; $j < $i + 4 && $j <$statment->rowCount(); $j++) {
+                            for ($j = $i; $j < $i + 3 && $j < $statment->rowCount(); $j++) {
                                 echo '
-                                    <div class="col-sm-12 col-md-2 col-lg-3 p-3">
+                                    <div class="col-4 col-sm-12 col-md-2 col-lg-4 p-3">
                                         <div class="card shadow">
-                                            <a href=""><img src="image/product_picture/'.$result[$j]['picture'].'" class="card-img-top img-fluid rounded card-hover-burger"></a>
+                                            <a href=""><img src="image/product_picture/' . $_POST['type_food'] . '/' . $result[$j]['picture'] . '" class="card-img-top img-fluid rounded card-hover-burger"></a>
                                             <div class="card-body">
-                                                <h5 class="card-title">'.$result[$j]['product_name'].'</h5>
-                                                <p class="card-text">'.$result[$j]['price'].'$</p>
+                                                <h5 class="card-title">' . $result[$j]['product_name'] . '</h5>
+                                                <p class="card-text">' . $result[$j]['price'] . '$</p>
                                             </div>
                                             <div class="card-footer">
                                                 <form action="" method="post" enctype="multipart/form-data">
-                                                    <input type="hidden" name="order_product" value="'.$result[$j]['id'].'" >
+                                                    <input type="hidden" name="order_product" value="' . $result[$j]['id'] . '" >
                                                     <button type="submit" class="btn btn-primary">Add card</button>
                                                 </form>
                                             </div>
@@ -110,16 +110,49 @@
                         <span class="sr-only">Next</span>
                       </a>
                         ';
-                        
                     }
                 }
                 ?>
             </div>
         </div>
     </div>
-    </div>
     <?php require_once __DIR__ . "../../partitial/footer.php" ?>
 </body>
 
 </html>
 
+
+<?php
+echo "
+<script>
+    window.onload = function(){
+        var imageContainer = document.querySelector('.image-container');
+        
+        var cardContainer = document.querySelector('.col');
+        var imgCards = document.querySelectorAll('.card-img-top');
+
+        imgCards.forEach(function(imgCard){
+            imgCard.addEventListener('mouseover', function(){
+                var siblingH5 = imgCard.closest('.card').querySelector('h5.card-title');
+                if (siblingH5) {
+                    var textCardBody = siblingH5.textContent.trim();
+                    var imgNoBg = document.createElement('img');
+                    imgNoBg.setAttribute('src', 'image/product_picture/" . $_POST['type_food'] . "/".$_POST['type_food']."_no_bg/' + encodeURIComponent(textCardBody) + '-removebg.png');
+                    imgNoBg.setAttribute('class', 'img-no-bg');
+                    
+
+                    var prevNoBgImages = document.querySelectorAll('.img-no-bg');
+                    prevNoBgImages.forEach(function(prevNoBgImage){
+                        prevNoBgImage.remove();
+                    });
+
+                    imageContainer.insertBefore(imgNoBg, imageContainer.firstChild);
+                } else {
+                    console.error('Sibling h5.card-title not found.');
+                }
+            })
+        })
+    }
+</script>
+";
+?>
