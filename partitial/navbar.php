@@ -23,16 +23,7 @@ include_once __DIR__ . "/connect.php";
                     <a class="nav-link" href="about.php">About</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Information
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Food</a>
-                        <a class="dropdown-item" href="#">Drink</a>
-                        <a class="dropdown-item" href="#">Snack</a>
-                        <a class="dropdown-item" href="#">Dessert</a>
-                        <div class="dropdown-divider"></div>
-                    </div>
+                    <a class="nav-link" href="food.php">Products</a>
                 </li>
 
                 <li class="nav-item">
@@ -43,6 +34,24 @@ include_once __DIR__ . "/connect.php";
                     <a class="nav-link" href="#">Contact</a>
                 </li>
             </ul>
+            <a href="" class="shoping-cart mr-3">
+                <i class="fa-solid fa-cart-shopping nav-link my-2 my-lg-0 text-light" style="font-size: 40px"></i>
+                <span class="rounded-circle badge badge-light text-decoration-none text-danger">
+                    <?php
+                        $quantity = 0;
+                        if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+                            $query = "SELECT * FROM detail_bill WHERE username = ? AND password = ?";
+                            $statment = $connect->prepare($query);
+                            $statment->execute([$_SESSION['username'], $_SESSION['password']]);
+
+                            if($statment->rowCount() > 0){
+                                $quantity = $statment->rowCount();
+                            }
+                        }
+                        echo $quantity;
+                    ?>
+                </span>
+            </a>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -87,3 +96,17 @@ include_once __DIR__ . "/connect.php";
         </div>
     </nav>
     </div>
+
+<style>
+    .shoping-cart{
+        position: relative;
+    }
+
+    .badge{
+        position: absolute;
+        left: 40px
+    }
+</style>
+
+
+
